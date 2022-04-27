@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/user");
 
+const sauceRoutes = require("./routes/sauce");
+
+const path = require("path");
+
 mongoose
 	.connect(
 		"mongodb+srv://P3DR0:lPUrB3AU9KPZYgxP@cluster0.wtlwm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
@@ -29,13 +33,10 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-app.post("/api/stuff", (req, res, next) => {
-	console.log(req.body);
-	res.status(201).json({
-		message: "Objet créé !",
-	});
-});
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/auth", userRoutes);
+
+app.use("/api/sauces", sauceRoutes);
 
 module.exports = app;
