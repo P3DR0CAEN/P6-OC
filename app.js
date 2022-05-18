@@ -40,4 +40,9 @@ app.use("/api/auth", userRoutes);
 
 app.use("/api/sauces", sauceRoutes);
 
+app.use(function (err, req, res, next) {
+	res.status(500).send("Une erreur est survenue !");
+	next();
+});
+
 module.exports = app;

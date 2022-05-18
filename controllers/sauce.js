@@ -2,6 +2,7 @@ const Sauce = require("../models/Sauce");
 const fs = require("fs");
 
 exports.list = (req, res, next) => {
+	throw "Test";
 	Sauce.find()
 		.then((things) => res.status(200).json(things))
 		.catch((error) => res.status(400).json({ error }));
@@ -31,10 +32,6 @@ exports.viewSauce = (req, res, next) => {
 };
 
 exports.modifySauce = async (req, res, next) => {
-	/* if (req.userId !== req.body.userId) {
-		return res.status(401).json({ message: "Problème d'authentification" });
-	} */
-
 	const sauceObject = req.file
 		? {
 				...JSON.parse(req.body.sauce),
@@ -54,23 +51,17 @@ exports.modifySauce = async (req, res, next) => {
 	};
 
 	try {
-		await Sauce.updateOne(query, newDatas);
-		if (res.modifiedCount == 0) {
+		const updateRes = await Sauce.updateOne(query, newDatas);
+		if (updateRes.modifiedCount == 0) {
 			return res.status(400).json({ message: "Objet non modifié" });
 		}
-		return res
-			.status(200)
-			.json({ message: "Objet modifié !", message: response });
+		return res.status(200).json({ message: "Objet modifié !" });
 	} catch (error) {
 		return res.status(500).json({ error });
 	}
 };
 
 exports.deleteSauce = async (req, res, next) => {
-	/* if (req.userId !== req.body.userId) {
-		return res.status(401).json({ message: "Problème d'authentification" });
-	} */
-
 	const query = {
 		_id: req.params.id,
 		userId: req.userId,
@@ -96,15 +87,11 @@ exports.deleteSauce = async (req, res, next) => {
 };
 
 exports.likeSauce = async (req, res, next) => {
-	/* if (req.userId !== req.body.userId) {
-		return res.status(401).json({ message: "Problème d'authentification" });
-	} */
-
 	const query = { _id: req.params.id };
 
 	const sauce = await Sauce.findOne(query);
 
-	console.log("-----------------");
+	/* console.log("-----------------"); */
 	/* console.log(sauce); */
 
 	let likesList = sauce.usersLiked;
@@ -113,7 +100,7 @@ exports.likeSauce = async (req, res, next) => {
 	let nbDislike = dislikesList.length;
 	const userId = req.userId;
 
-	console.log("raw values", likesList, nbLike, dislikesList, nbDislike);
+	/* console.log("db values", likesList, nbLike, dislikesList, nbDislike); */
 
 	// si y'a déjà un like ou dislike on l'enlève = l'utilisateur retire son like
 	if (likesList.includes(userId)) {
@@ -135,7 +122,7 @@ exports.likeSauce = async (req, res, next) => {
 		nbDislike = dislikesList.length;
 	}
 
-	console.log("new values", likesList, nbLike, dislikesList, nbDislike);
+	/* console.log("new values", likesList, nbLike, dislikesList, nbDislike); */
 
 	const newDatas = {
 		likes: nbLike,
@@ -145,9 +132,9 @@ exports.likeSauce = async (req, res, next) => {
 	};
 
 	try {
-		await Sauce.updateOne(query, newDatas);
+		const updateRes = await Sauce.updateOne(query, newDatas);
 
-		if (res.modifiedCount == 0) {
+		if (updateRes.modifiedCount == 0) {
 			return res.status(400).json({ message: "Objet non modifié" });
 		}
 
