@@ -2,7 +2,6 @@ const Sauce = require("../models/Sauce");
 const fs = require("fs");
 
 exports.list = (req, res, next) => {
-	throw "Test";
 	Sauce.find()
 		.then((things) => res.status(200).json(things))
 		.catch((error) => res.status(400).json({ error }));
@@ -91,16 +90,11 @@ exports.likeSauce = async (req, res, next) => {
 
 	const sauce = await Sauce.findOne(query);
 
-	/* console.log("-----------------"); */
-	/* console.log(sauce); */
-
 	let likesList = sauce.usersLiked;
 	let dislikesList = sauce.usersDisliked;
 	let nbLike = likesList.length;
 	let nbDislike = dislikesList.length;
 	const userId = req.userId;
-
-	/* console.log("db values", likesList, nbLike, dislikesList, nbDislike); */
 
 	// si y'a déjà un like ou dislike on l'enlève = l'utilisateur retire son like
 	if (likesList.includes(userId)) {
@@ -121,8 +115,6 @@ exports.likeSauce = async (req, res, next) => {
 		dislikesList.push(req.body.userId);
 		nbDislike = dislikesList.length;
 	}
-
-	/* console.log("new values", likesList, nbLike, dislikesList, nbDislike); */
 
 	const newDatas = {
 		likes: nbLike,
